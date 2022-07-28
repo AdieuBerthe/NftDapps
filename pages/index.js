@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useEffect, useState, useContext } from 'react'
-import { UserContext } from "./context";
+import { UserContext } from "../context/context";
 import axios from 'axios'
 
 
@@ -10,32 +10,32 @@ import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
 
 
 export default function Home() {
-  const { factory, signer, nftCollections } = useContext(UserContext);
+  const { signer, nftCollections } = useContext(UserContext);
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState('not-loaded');
+  let loaded = false;
 
 
   useEffect(() => {
-    loadNFTs()
-  }, [nftCollections]);
+    loadNFTs();
+     // eslint-disable-next-line
+    }, [loadingState]);
 
 
   async function loadNFTs() {
-    /* create a generic provider and query for unsold market items */
 
-    if(nftCollections.length !== 0) {
+    
+    if(!loaded) {
+    if(nftCollections.length > 0) {
       setNfts([]);
       for(let i = 0; i < nftCollections.length; i++) {
         
     const collection = new ethers.Contract(nftCollections[i][0], Collection.abi, signer)
-    
     const data = await collection.fetchMarketItems()
-
     /*
     *  map over items returned from smart contract and format 
     *  them as well as fetch their token metadata
     */
-    
     const items = await Promise.all(data.map(async tk => {
       const tokenUri = await collection.tokenURI(tk.tokenId)
       const meta = await axios.get(tokenUri)
@@ -50,14 +50,17 @@ export default function Home() {
         collection: nftCollections[i][1],
         description: meta.data.description,
         address: nftCollections[i][0],
-      }
+        tokenUri
+        }
       return item
     }))
     setNfts((arr) => [...arr, ...items]);
-    setLoadingState('loaded') 
-  }
-  }
     
+  }
+  setLoadingState('loaded') 
+  loaded = true;
+  }
+}
   }
   async function buyNft(nft) {
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
@@ -73,13 +76,15 @@ export default function Home() {
   }
   if (loadingState === 'loaded' && !nfts.length) return (<h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>)
   return (
+    <>
+    <h1 className="px-20 py-10 text-3xl">Items in marketplace</h1>
     <div className="flex justify-center">
       <div className="px-4" style={{ maxWidth: '1600px' }}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {
             nfts.map((nft, i) => (
               <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} />
+                <img src={nft.image} alt={nft.name} />
                 <div className="p-4">
                 <p className='text-right'>{nft.collection}</p>
                   <p style={{ height: '64px' }} className="text-2xl font-semibold">{nft.name}</p>
@@ -97,5 +102,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react'
-import { UserContext } from "./context";
+import { UserContext } from "../context/context";
 import { useRouter } from 'next/router'
 
 
 export default function CreateItem() {
-  const { factory, signer, nftCollections } = useContext(UserContext);
+  const { factory } = useContext(UserContext);
   const [formInput, updateFormInput] = useState({ artistName: '', symbol: '' })
   const router = useRouter()
 

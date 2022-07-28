@@ -1,4 +1,4 @@
-import { UserContextProvider } from './context';
+import { UserContextProvider } from '../context/context';
 import '../styles/globals.css'
 import Link from 'next/link'
 

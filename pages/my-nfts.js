@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 import { useEffect, useState, useContext } from 'react'
-import { UserContext } from './context'
+import { UserContext } from '../context/context'
 import axios from 'axios'
 
 
@@ -10,27 +10,28 @@ import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
 
 
 export default function MyAssets() {
-  const { factory, signer, nftCollections } = useContext(UserContext);
+  const { signer, nftCollections } = useContext(UserContext);
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState('not-loaded');
+  let loaded = false;
 
 
    useEffect(() => {
-    (async function () {
-      if(nftCollections) {
-        loadNfts();
-      }
-    })();
-   }, [nftCollections]);
+   loadNfts();
+    // eslint-disable-next-line
+   }, [loadingState]);
 
   
    async function loadNfts() {
     
-    if(nftCollections.length !== 0) {
+    if(!loaded) {
+    if(nftCollections.length > 0) {
+      
+        setNfts([]);
       for(let i = 0; i < nftCollections.length; i++) {
     const collection = new ethers.Contract(nftCollections[i][0], Collection.abi, signer)
     const data = await collection.fetchMyNFTs()
-
+       
     const items = await Promise.all(data.map(async tk => {
       const tokenURI = await collection.tokenURI(tk.tokenId)
       const meta = await axios.get(tokenURI)
@@ -40,30 +41,39 @@ export default function MyAssets() {
         tokenId: tk.tokenId.toNumber(),
         seller: tk.seller,
         owner: tk.owner,
+        name: meta.data.name,
         image: meta.data.image,
         collection: nftCollections[i][1],
         description: meta.data.description,
         tokenURI
       }
+      
       return item
-    }))
-
+      
+      
+    }))  
     setNfts((arr) => [...arr, ...items])
+    
   } 
   setLoadingState('loaded')
+  loaded = true;
 }
-     
+
   }
+}
+
+
   if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-20 text-3xl">No NFTs listed</h1>)
   return (
     <div>
       <div className="p-4">
+        
         <h2 className="text-2xl py-2">Your NFTs</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {
             nfts.map((nft, i) => (
               <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} className="rounded" />
+                <img src={nft.image} alt={nft.name} className="rounded" />
                 <div className="p-4">
                 <p className='text-right'>{nft.collection}</p>
                   <p style={{ height: '64px' }} className="text-2xl font-semibold">{nft.name}</p>

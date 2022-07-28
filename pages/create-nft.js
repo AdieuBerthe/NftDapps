@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react'
-import { UserContext } from './context'
+import { UserContext } from '../context/context'
 import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 
@@ -12,7 +12,7 @@ import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
 
 
 export default function CreateItem() {
-  const { factory, signer, nftCollections } = useContext(UserContext);
+  const { signer, nftCollections } = useContext(UserContext);
   const [fileUrl, setFileUrl] = useState(null)
   const [formInput, updateFormInput] = useState({ collectionID: '', price: '', name: '', description: '' })
 
@@ -111,7 +111,7 @@ export default function CreateItem() {
         <div>
         {
           fileUrl && (
-            <img className="rounded mt-4" width="350" src={fileUrl} />
+            <img className="rounded mt-4" width="350" src={fileUrl} alt='' />
           )
         }
         </div>
