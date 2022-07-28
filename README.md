@@ -1,13 +1,18 @@
-# Sample Hardhat Project
+# NFT Markeplace
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
 
-Try running some of the following tasks:
 
 ```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+git clone -b antoine https://github.com/AdieuBerthe/NftDapps/
+cd NftDapps
+npm install
 ```
+
+Lance Ganache dans un autre terminal. Le network de test natif de hardhat utilise tout le temps les même adresses, ce qui cause des bugs.
+Pour déployer sur testnet, crée un .env avec infura_Id et clé privée.
+
+```shell
+npx hardhat run scripts/deploy.js --network localhost
+npm run dev
+```
+
