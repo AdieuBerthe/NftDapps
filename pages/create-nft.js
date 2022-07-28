@@ -1,60 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState, useContext } from 'react'
+import { UserContext } from './context'
 import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
-import Web3Modal from 'web3modal'
+
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
-import {
-  collectionFactoryAddress
-} from '../config'
+
 
 import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
-import CollectionFactory from '../artifacts/contracts/CollectionFactory.sol/CollectionFactory.json'
-import { getAddress } from 'ethers/lib/utils';
+
 
 export default function CreateItem() {
+  const { factory, signer, nftCollections } = useContext(UserContext);
   const [fileUrl, setFileUrl] = useState(null)
   const [formInput, updateFormInput] = useState({ collectionID: '', price: '', name: '', description: '' })
-  const [nfts, setNfts] = useState([]);
-  const [factory, setFactory] = useState();
-  const [nftCollections, setCollections] = useState([]);
-  const [signer, setSigner] = useState();
 
-  useEffect(() => {
-    (async function () {
-      const web3Modal = new Web3Modal()
-      const connection = await web3Modal.connect()
-      const provider = new ethers.providers.Web3Provider(connection)
-      setSigner(provider.getSigner());
-      
-      })();
-   }, []);
 
-   useEffect(() => {
-    (async function () {
-      if(signer) {
-      setFactory(new ethers.Contract(collectionFactoryAddress, CollectionFactory.abi, signer));
-      }
-      })();
-   }, [signer]);
-
-   useEffect(() => {
-    (async function () {
-      if(factory) {
-      updateCollections();
-      }
-      })();
-   }, [factory]);
-
-   async function updateCollections() {
-      setCollections([]); 
-      let listCollections = await factory.queryFilter(factory.filters.collectionCreated());
-      for (let i = 0; i < listCollections.length; i++) {
-      let coll = await factory.getOneCollection(i);
-      setCollections((Array) => [...Array, ...[[coll[0], coll[1], coll[2]]]]);
-    }  
-   };
 
 
 
@@ -92,7 +54,7 @@ export default function CreateItem() {
     }  
   }
 
-  async function listNFTForSale() {
+  async function addNft() {
     
     const url = await uploadToIPFS()
     /* create the NFT */
@@ -153,7 +115,7 @@ export default function CreateItem() {
           )
         }
         </div>
-        <button onClick={listNFTForSale} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
+        <button onClick={addNft} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
           Create NFT
         </button></>}
         </>

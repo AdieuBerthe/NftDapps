@@ -1,50 +1,19 @@
 import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { UserContext } from './context'
 import axios from 'axios'
-import Web3Modal from 'web3modal'
 
-import {
-  collectionFactoryAddress
-} from '../config'
+
 
 import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
-import CollectionFactory from '../artifacts/contracts/CollectionFactory.sol/CollectionFactory.json'
+
 
 
 export default function MyAssets() {
+  const { factory, signer, nftCollections } = useContext(UserContext);
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState('not-loaded');
-  const [factory, setFactory] = useState();
-  const [nftCollections, setCollections] = useState([]);
-  const [signer, setSigner] = useState();
 
-  useEffect(() => {
-    (async function () {
-      const web3Modal = new Web3Modal()
-      const connection = await web3Modal.connect()
-      const provider = new ethers.providers.Web3Provider(connection)
-      setSigner(provider.getSigner());
-      
-      })();
-   }, []);
-
-   useEffect(() => {
-    (async function () {
-      if(signer) {
-      setFactory(new ethers.Contract(collectionFactoryAddress, CollectionFactory.abi, signer));
-      }
-      })();
-   }, [signer]);
-
-   
-
-   useEffect(() => {
-    (async function () {
-      if(factory) {
-      updateCollections();
-      }
-      })();
-   }, [factory]);
 
    useEffect(() => {
     (async function () {
@@ -54,15 +23,7 @@ export default function MyAssets() {
     })();
    }, [nftCollections]);
 
-   async function updateCollections() {
-    setCollections([]); 
-      let listCollections = await factory.queryFilter(factory.filters.collectionCreated());
-      for (let i = 0; i < listCollections.length; i++) {
-      let coll = await factory.getOneCollection(i);
-      setCollections((Array) => [...Array, ...[[coll[0], coll[1], coll[2]]]]);
-    }  
-   };
-
+  
    async function loadNfts() {
     
     if(nftCollections.length !== 0) {

@@ -1,3 +1,4 @@
+import { UserContextProvider } from './context';
 import '../styles/globals.css'
 import Link from 'next/link'
 
@@ -29,7 +30,9 @@ function MyApp({ Component, pageProps }) {
           </Link>
           </div>
       </nav>
+      <UserContextProvider>
       <Component {...pageProps} />
+      </UserContextProvider>
     </div>
   )
 }

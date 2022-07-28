@@ -1,49 +1,13 @@
-import { useState, useEffect } from 'react'
-import { ethers } from 'ethers'
+import { useState, useContext } from 'react'
+import { UserContext } from "./context";
 import { useRouter } from 'next/router'
-import Web3Modal from 'web3modal'
 
-
-import {
-  collectionFactoryAddress
-} from '../config'
-
-import CollectionFactory from '../artifacts/contracts/CollectionFactory.sol/CollectionFactory.json'
 
 export default function CreateItem() {
+  const { factory, signer, nftCollections } = useContext(UserContext);
   const [formInput, updateFormInput] = useState({ artistName: '', symbol: '' })
-  const [factory, setFactory] = useState();
-  const [nftCollections, setCollections] = useState([]);
   const router = useRouter()
 
- useEffect(() => {
-  (async function () {
-    const web3Modal = new Web3Modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-    setFactory(new ethers.Contract(collectionFactoryAddress, CollectionFactory.abi, signer));
-    })();
- }, []);
-
- useEffect(() => {
-  (async function () {
-    if(factory) {
-    updateCollections();
-    }
-    })();
- }, []);
-
-
-
- async function updateCollections() {
-  setCollections([]); 
-    let listCollections = await factory.queryFilter(factory.filters.collectionCreated());
-    for (let i = 0; i < listCollections.length; i++) {
-    let coll = await factory.getOneCollection(i);
-    setCollections((Array) => [...Array, ...[[coll[0], coll[1], coll[2]]]]);
-  }  
- };
 
 
   async function createCollection() {
