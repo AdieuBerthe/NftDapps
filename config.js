@@ -1,3 +1,3 @@
 
-  export const collectionFactoryAddress = "0x60BCA6D0e253621E895d2CF0A0E206d889cb19f9"
+  export const collectionFactoryAddress = "0xa04b29Ed2dDf3516188944322477973f2573ed57"
   

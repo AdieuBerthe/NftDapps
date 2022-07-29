@@ -1,22 +1,46 @@
-import { useState, useContext } from 'react'
+import {
+  Contract,
+  utils,
+} from 'ethers'
+import { useState, useContext, useEffect } from 'react'
 import { UserContext } from '../context/context'
-import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
+import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
 
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
 
-
-import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
-
-
 export default function CreateItem() {
-  const { signer, nftCollections } = useContext(UserContext);
+  const { factory, provider, nftCollections, user, formInput, updateFormInput } = useContext(UserContext);
   const [fileUrl, setFileUrl] = useState(null)
-  const [formInput, updateFormInput] = useState({ collectionID: '', price: '', name: '', description: '' })
+  const [ownerCollections, setOwnerCollections] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  let loaded = false;
 
 
+
+
+  useEffect(() => {
+    (async function () {
+      if (user && factory && !loaded) {
+        setOwnerCollections([]);
+        updateCollections();
+        loaded = true;
+
+      };
+    })();
+  }, [user]);
+
+  async function updateCollections() {
+    
+    for (let i = 0; i < nftCollections.length; i++) {
+      let coll = nftCollections[i];
+      if (user === coll[1]) {
+        setOwnerCollections((Array) => [...Array, ...[[coll[0], coll[1], coll[2], coll[3]]]]);
+      }
+    }
+  };
 
 
 
@@ -25,6 +49,7 @@ export default function CreateItem() {
     /* upload image to IPFS */
     const file = e.target.files[0]
     try {
+      setUploading(true);
       const added = await client.add(
         file,
         {
@@ -35,7 +60,8 @@ export default function CreateItem() {
       setFileUrl(url)
     } catch (error) {
       console.log('Error uploading file: ', error)
-    }  
+    }
+    setUploading(false);
   }
   async function uploadToIPFS() {
     const { name, description, price, collectionID } = formInput
@@ -51,17 +77,18 @@ export default function CreateItem() {
       return url
     } catch (error) {
       console.log('Error uploading file: ', error)
-    }  
+    }
+    
   }
 
   async function addNft() {
-    
+
     const url = await uploadToIPFS()
     /* create the NFT */
     const address = formInput.collectionID;
-    console.log(address);
-    const price = ethers.utils.parseUnits(formInput.price, 'ether');
-    let contract = new ethers.Contract(address, Collection.abi, signer);
+    const signer = provider.getSigner();
+    const price = utils.parseUnits(formInput.price, 'ether');
+    let contract = new Contract(address, Collection.abi, signer);
     let transaction = await contract.createToken(url, price);
     await transaction.wait();
 
@@ -71,57 +98,63 @@ export default function CreateItem() {
 
     <div className="flex justify-center">
       <div className="w-1/2 flex flex-col pb-12">
-                   <select className='mt-2 border rounded p-4' value={formInput.collectionID} onChange={e => updateFormInput({ collectionID: e.target.value })}>
-                    <option value="">Select a Collection</option>
-                    {nftCollections.map((prop) => {
-                      return (
-                        <option key={prop[0]} value={prop[0]}> {prop[1]} </option>
-                      )
-                    })}
-                  </select>
-                  
-          
-        <>
-        {formInput.collectionID === '' ? <>
-          
-        </>
-         :<>
-        <input 
-          placeholder="NFT Name"
-          className="mt-8 border rounded p-4"
-          onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
-        />
-        <textarea
-          placeholder="NFT Description"
-          className="mt-2 border rounded p-4"
-          onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
-        />
-        <input
-          placeholder="NFT Price in Eth"
-          className="mt-2 border rounded p-4"
-          onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
-        />
-        <input
-          type="file"
-          name="Asset"
-          className="my-4"
-          onChange={onChange}
-        />
-        
-        <div>
-        {
-          fileUrl && (
-            <img className="rounded mt-4" width="350" src={fileUrl} alt='' />
-          )
+        {ownerCollections.length === 0 && (<p>Before creating a nft, you need to <a href="/collection">create a collection</a></p>)}
+        {ownerCollections.length > 0 && (<>
+          <h2 className="text-2xl py-2">Create a NFT</h2>
+          <br />
+          <select className='mt-2 border rounded p-4' value={formInput.collectionID} onChange={e => updateFormInput({ collectionID: e.target.value })}>
+            <option value="">Select a Collection</option>
+            {ownerCollections.map((prop) => {
+              return (
+                <option key={prop[0]} value={prop[0]}> {prop[2]} </option>
+              )
+            })}
+          </select>
+        </>)
         }
-        </div>
-        <button onClick={addNft} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
-          Create NFT
-        </button></>}
+
+        <>
+          {formInput.collectionID === '' ? <>
+
+          </>
+            : <>
+              <input
+                placeholder="NFT Name"
+                className="mt-8 border rounded p-4"
+                onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
+              />
+              <textarea
+                placeholder="NFT Description"
+                className="mt-2 border rounded p-4"
+                onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
+              />
+              <input
+                placeholder="NFT Price in Eth"
+                className="mt-2 border rounded p-4"
+                onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
+              />
+              <input
+                type="file"
+                name="Asset"
+                className="my-4"
+                onChange={onChange}
+              />
+              
+              <div>
+                {
+                  fileUrl && (
+                    <img className="rounded mt-4" width="350" src={fileUrl} alt='' />
+                  )
+                }
+              </div>
+              {uploading ? <div><p>Uploading image...</p></div> : <></>}
+              {formInput.name !== '' && formInput.price !== '' && formInput.description !== '' && fileUrl ? <button onClick={addNft} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
+                Create NFT
+              </button> : <p>All fields are required </p>}</>}
         </>
-        
-        
-        
+
+
+
       </div>
     </div>
   )

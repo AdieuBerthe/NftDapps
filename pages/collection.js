@@ -6,24 +6,33 @@ import { useRouter } from 'next/router'
 export default function CreateItem() {
   const { factory } = useContext(UserContext);
   const [formInput, updateFormInput] = useState({ artistName: '', symbol: '' })
-  const router = useRouter()
+  const [created, setCreated] = useState(false)
+  const router = useRouter();
+
 
 
 
   async function createCollection() {
-
-   let transaction = await factory.createNFTCollection(formInput.artistName, formInput.symbol);
+    try {
+    let transaction = await factory.createNFTCollection(formInput.artistName, formInput.symbol);
     await transaction.wait();
-    router.push('/create-nft');
+    setCreated(true);
+    } catch (error) {
+      console.log('Error : ', error)
     }
-   
- 
+  }
+
+  const redirect = () => {
+    router.push('/create-nft');
+  }
+
+
 
   return (
-    
+
     <div className="flex justify-center">
-      <div className="w-1/2 flex flex-col pb-12">
-        <input 
+      {!created ? <div className="w-1/2 flex flex-col pb-12">
+        <input
           placeholder="Artist Name"
           className="mt-8 border rounded p-4"
           onChange={e => updateFormInput({ ...formInput, artistName: e.target.value })}
@@ -33,13 +42,20 @@ export default function CreateItem() {
           className="mt-2 border rounded p-4"
           onChange={e => updateFormInput({ ...formInput, symbol: e.target.value })}
         />
-              
-        <button onClick={createCollection} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
+
+         <button onClick={createCollection} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
           Create Collection
-        </button>
-      </div>
+        </button> 
+      </div> 
+      : 
+      <div className="text-2xl py-2">
+             
+        <p>Collection created ! Why don't you add some NFTs to it ?</p>
+        <br/>
+        <button onClick={redirect} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg" >Create a NFT</button>
+        </div>}
     </div>
-    
-    
+
+
   )
 }
