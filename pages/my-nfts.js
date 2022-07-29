@@ -67,9 +67,11 @@ export default function MyAssets() {
   }
 
 
-  if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-20 text-3xl">No NFTs listed</h1>)
+  
   return (
-    <div>
+<div>
+    {!nfts.length ? <h1 className="py-10 px-20 text-3xl">No NFT in your wallet 🙁</h1> :
+    
       <div className="p-4" style={{ maxWidth: '1600px' }}>
 
         <h2 className="text-2xl py-2">Your NFTs</h2>
@@ -93,6 +95,7 @@ export default function MyAssets() {
           }
         </div>
       </div>
-    </div>
+    }
+  </div>
   )
 }
