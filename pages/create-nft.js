@@ -5,6 +5,7 @@ import {
 import { useState, useContext, useEffect } from 'react'
 import { UserContext } from '../context/context'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
+import { useRouter } from 'next/router'
 import Collection from '../artifacts/contracts/Collection.sol/Collection.json'
 
 
@@ -17,6 +18,7 @@ export default function CreateItem() {
   const [ownerCollections, setOwnerCollections] = useState([]);
   const [uploading, setUploading] = useState(false);
   let loaded = false;
+  const router = useRouter();
 
 
 
@@ -94,11 +96,20 @@ export default function CreateItem() {
 
   }
 
+  const redirect = () => {
+    router.push('/collection');
+  }
+
   return (
 
     <div className="flex justify-center">
       <div className="w-1/2 flex flex-col pb-12">
-        {ownerCollections.length === 0 && (<p>Before creating a nft, you need to <a href="/collection">create a collection</a></p>)}
+        {ownerCollections.length === 0 && (
+        <div className="text-2xl py-2">
+          <p>Before creating a nft, you need to create a collection</p>
+          <button onClick={redirect} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg" >Create a collection</button>
+        </div>
+        )}
         {ownerCollections.length > 0 && (<>
           <h2 className="text-2xl py-2">Create a NFT</h2>
           <br />
