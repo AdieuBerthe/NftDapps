@@ -22,14 +22,12 @@ function MyApp({ Component, pageProps }) {
       sort: "",
     });
   }
-  console.log("filters");
-  console.log(filters);
 
   const sort = async (sort) => {
-    /*await setFilters({
+    setFilters({
       ...filters,
       sort,
-    });*/
+    });
   };
   return (
     <div>
@@ -38,6 +36,7 @@ function MyApp({ Component, pageProps }) {
         <div className="flex justify-center mt-4">
           <Link href="/">
             <a
+              onClick={() => resetSearchFilter()}
               className={
                 router.pathname === "/"
                   ? "mr-4 text-blue-800 underline underline-offset-8 decoration-6"

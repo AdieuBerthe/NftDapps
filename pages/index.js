@@ -19,13 +19,6 @@ const Home = (props) => {
     // eslint-disable-next-line
   }, [user, nftCollections, props.filters]);
 
-  /*
-  useEffect(() => {
-    loaded = false;
-    loadNFTs();
-    // eslint-disable-next-line
-  }, [props.filters]);
-*/
   async function loadNFTs() {
     if (!loaded) {
       if (nftCollections.length > 0) {
@@ -66,7 +59,18 @@ const Home = (props) => {
               }
             })
           );
-          setNfts((arr) => [...arr, ...items]);
+          let displayedItems = items.filter(
+            (value) => Object.keys(value).length !== 0
+          );
+          if (props.filters.sort === "asc" || props.filters.sort === "desc") {
+            displayedItems.sort((a, b) => {
+              const diff = a.price - b.price;
+              if (diff === 0) return 0;
+              const sign = Math.abs(diff) / diff; //-1, 1
+              return props.filters.sort === "asc" ? sign : -sign;
+            });
+          }
+          setNfts((arr) => [...arr, ...displayedItems]);
         }
       }
       setLoadingState("loaded");
