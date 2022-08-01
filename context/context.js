@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext } from "react";
 import { ethers } from "ethers";
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from "ethers/lib/utils";
 import { collectionFactoryAddress } from "../config";
 
 import CollectionFactory from "../artifacts/contracts/CollectionFactory.sol/CollectionFactory.json";
@@ -12,24 +12,29 @@ const UserContextProvider = ({ children }) => {
   const [nftCollections, setCollections] = useState([]);
   const [provider, setProvider] = useState();
   const [user, setUser] = useState();
-  const [formInput, updateFormInput] = useState({ collectionID: '', price: '', name: '', description: '' })
-
+  const [formInput, updateFormInput] = useState({
+    collectionID: "",
+    price: "",
+    name: "",
+    description: "",
+  });
 
   useEffect(() => {
     (async function () {
       if (window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
 
         setUser(getAddress(accounts[0]));
 
         setProvider(new ethers.providers.Web3Provider(window.ethereum));
       }
 
-      window.ethereum.on('accountsChanged', (accounts) => {
+      window.ethereum.on("accountsChanged", (accounts) => {
         setUser(getAddress(accounts[0]));
-        updateFormInput({ collectionID: '' })
+        updateFormInput({ collectionID: "" });
       });
-
     })();
     // eslint-disable-next-line
   }, []);
@@ -86,7 +91,7 @@ const UserContextProvider = ({ children }) => {
         provider,
         nftCollections,
         formInput,
-        updateFormInput
+        updateFormInput,
       }}
     >
       {children}

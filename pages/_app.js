@@ -2,9 +2,35 @@ import { UserContextProvider } from "../context/context";
 import "../styles/globals.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+  const [filters, setFilters] = useState({
+    s: "",
+    sort: "",
+  });
+  const search = async (s) => {
+    await setFilters({
+      ...filters,
+      s,
+    });
+  };
+  function resetSearchFilter() {
+    setFilters({
+      s: "",
+      sort: "",
+    });
+  }
+  console.log("filters");
+  console.log(filters);
+
+  const sort = async (sort) => {
+    /*await setFilters({
+      ...filters,
+      sort,
+    });*/
+  };
   return (
     <div>
       <nav className="border-b p-6 text-center">
@@ -23,6 +49,7 @@ function MyApp({ Component, pageProps }) {
           </Link>
           <Link href="/create-nft">
             <a
+              onClick={() => resetSearchFilter()}
               className={
                 router.pathname === "/create-nft"
                   ? "mr-6 text-blue-800 underline underline-offset-8 decoration-6"
@@ -33,12 +60,20 @@ function MyApp({ Component, pageProps }) {
             </a>
           </Link>
           <Link href="/collection">
-            <a className="mr-6 text-blue-800">
+            <a
+              onClick={() => resetSearchFilter()}
+              className={
+                router.pathname === "/collection"
+                  ? "mr-6 text-blue-800 underline underline-offset-8 decoration-6"
+                  : "mr-6 text-blue-800"
+              }
+            >
               Create collection
             </a>
           </Link>
           <Link href="/my-nfts">
             <a
+              onClick={() => resetSearchFilter()}
               className={
                 router.pathname === "/my-nfts"
                   ? "mr-6 text-blue-800 underline underline-offset-8 decoration-6"
@@ -51,7 +86,34 @@ function MyApp({ Component, pageProps }) {
         </div>
       </nav>
       <UserContextProvider>
-        <Component {...pageProps} />
+        {router.pathname === "/" ? (
+          <>
+            <div className="col-md-12 mb-4 input-group w-1/2 pl-20">
+              <input
+                className="form-control placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3"
+                placeholder="Search NFTs by name..."
+                onKeyUp={(e) => search(e.target.value)}
+              />
+              <div className="input-group-append">
+                <select
+                  className="form-select italic text-slate-400 rounded-md py-2 pl-9 pr-3"
+                  onChange={(e) => sort(e.target.value)}
+                >
+                  <option>Select</option>
+                  <option value="asc">Price Ascending</option>
+                  <option value="desc">Price Descending</option>
+                </select>
+              </div>
+            </div>
+            <Component
+              {...pageProps}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          </>
+        ) : (
+          <Component {...pageProps} filters={filters} setFilters={setFilters} />
+        )}
       </UserContextProvider>
     </div>
   );
