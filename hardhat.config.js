@@ -1,28 +1,28 @@
-require("@nomiclabs/hardhat-waffle")
-require('dotenv').config();
+require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-truffle5");
+require("dotenv").config();
 
 module.exports = {
-  defaultNetwork: 'localhost',
+  defaultNetwork: "localhost",
   networks: {
     hardhat: {
-      chainId: 1337
+      chainId: 1337,
     },
 
-ropsten: {
-  url: `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`,
-  accounts : [`${process.env.PRIVATE_KEY}`],
-  saveDeployments: true,
-  chainId: 3,
-  
-  },
+    ropsten: {
+      url: `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`,
+      accounts: [`${process.env.PRIVATE_KEY}`],
+      saveDeployments: true,
+      chainId: 3,
+    },
   },
   solidity: {
     version: "0.8.14",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200
-      }
-    }
-  }
-}
+        runs: 200,
+      },
+    },
+  },
+};
