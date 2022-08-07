@@ -1,12 +1,16 @@
 {
+  "homepage": "https://AdieuBerthe.github.io/NftDapps/",
   "name": "nft-marketplace",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -39,6 +43,7 @@
     "autoprefixer": "^10.4.7",
     "eslint": "8.20.0",
     "eslint-config-next": "12.2.3",
+    "gh-pages": "^4.0.0",
     "hardhat-gas-reporter": "^1.0.8",
     "postcss": "^8.4.14",
     "solidity-coverage": "^0.7.21",

@@ -2,14 +2,12 @@
 
 ## Expected links :
 
-Github Pages web site :
-xxxxx (à completer ou supprimer)
 
 Git repo :
 https://github.com/AdieuBerthe/NftDapps
 
 Demo video :
-xxxxx (à completer ou supprimer)
+https://youtu.be/U60m_jUZeIo
 
 ## Setup
 
@@ -55,7 +53,7 @@ npm run dev
 - [solidity]
 - [Hardhat]
 - [Ganache]
-- [MateMaks]
+- [MetaMask]
 - [ipfs]
 - [openzeppelin]
 - [REACT]
@@ -66,7 +64,7 @@ npm run dev
 
 ## Smart Contracts
 
-In order to devlope the Dapp we defined two contract.
+In order to develop the Dapp we defined two contract.
 
 ### Collection
 
@@ -75,7 +73,7 @@ In order to devlope the Dapp we defined two contract.
 
 ### CollectionFactory
 
-> This msart contract allow to manage collection of NFTs and the factory associated to the marketPlace.
+> This smart contract allows to manage collection of NFTs and the factory associated to the marketPlace.
 
 ---
 
@@ -85,7 +83,7 @@ In order to devlope the Dapp we defined two contract.
 
 ---
 
-### Use case expressed in the statmeent of work
+### Use case expressed in the statement of work
 
 #### Minimal requirement
 
@@ -112,6 +110,4 @@ In order to devlope the Dapp we defined two contract.
 
 ---
 
-## Solution improvement:
 
-Use of ERC 20 token ???
