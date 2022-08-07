@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }) {
     });
   };
   return (
-    <div className="antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 h-screen">
+    <div className="min-h-screen flex flex-col antialiased text-slate-400 bg-slate-900 pb-2">
       <nav className="border-b p-6 text-center">
         <p className="text-4xl font-bold text-blue-400">NFT Marketplace</p>
         <div className="flex justify-center mt-4">
@@ -95,11 +95,14 @@ function MyApp({ Component, pageProps }) {
                 onKeyUp={(e) => search(e.target.value)}
               />
               <div className="input-group-append">
+                <br />
+                <label className="mt-2">Sort by :</label>
+                <br />
                 <select
                   className="form-select italic text-slate-600 bg-slate-200 rounded-md py-2 pl-9 pr-3 mt-2"
                   onChange={(e) => sort(e.target.value)}
                 >
-                  <option>Sort by...</option>
+                  <option>Collection</option>
                   <option value="asc">Price Ascending</option>
                   <option value="desc">Price Descending</option>
                 </select>

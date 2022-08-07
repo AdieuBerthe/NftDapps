@@ -17,7 +17,6 @@ export default function CreateItem() {
     let transaction = await factory.createNFTCollection(formInput.artistName, formInput.symbol);
     await transaction.wait();
     setCreated(true);
-    console.log("Yohoi");
     } catch (error) {
       console.log('Error : ', error)
     }
@@ -25,7 +24,6 @@ export default function CreateItem() {
 
   const addAnother = () => {
     setCreated(false);
-    console.log("bonkers");
   }
 
   const redirect = () => {
