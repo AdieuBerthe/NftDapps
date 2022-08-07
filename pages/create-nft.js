@@ -17,6 +17,7 @@ export default function CreateItem() {
   const [fileUrl, setFileUrl] = useState(null)
   const [ownerCollections, setOwnerCollections] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [minted, setMinted] = useState(false);
   let loaded = false;
   const router = useRouter();
 
@@ -93,7 +94,13 @@ export default function CreateItem() {
     let contract = new Contract(address, Collection.abi, signer);
     let transaction = await contract.createToken(url, price);
     await transaction.wait();
+    setMinted(true);
+  }
 
+  const newNft = () => {
+    setMinted(false);
+    updateFormInput({ collectionID: "" })
+    setFileUrl(null);
   }
 
   const redirect = () => {
@@ -110,10 +117,10 @@ export default function CreateItem() {
           <button onClick={redirect} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg" >Create a collection</button>
         </div>
         )}
-        {ownerCollections.length > 0 && (<>
+        {ownerCollections.length > 0 && !minted && (<>
           <h2 className="text-2xl py-2">Create a NFT</h2>
           <br />
-          <select className='mt-2 border rounded p-4' value={formInput.collectionID} onChange={e => updateFormInput({ collectionID: e.target.value })}>
+          <select className='mt-2 border rounded p-4 bg-slate-200 text-slate-800 w-1/3' value={formInput.collectionID} onChange={e => updateFormInput({ collectionID: e.target.value })}>
             <option value="">Select a Collection</option>
             {ownerCollections.map((prop) => {
               return (
@@ -124,24 +131,31 @@ export default function CreateItem() {
         </>)
         }
 
-        <>
-          {formInput.collectionID === '' ? <>
-
+        {minted ? <div>
+          <h2 className="text-2xl py-2">NFT created !</h2>
+          <button onClick={newNft} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg w-1/3">
+                Create another NFT
+              </button>
+          </div> : 
+          <>
           </>
-            : <>
+          }
+
+        <>
+          {formInput.collectionID !== '' && !minted ?  <>
               <input
                 placeholder="NFT Name"
-                className="mt-8 border rounded p-4"
+                className="mt-8 border rounded p-4 placeholder:text-slate-600 bg-slate-200 text-slate-800 w-1/3"
                 onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
               />
               <textarea
                 placeholder="NFT Description"
-                className="mt-2 border rounded p-4"
+                className="mt-2 border rounded p-4 placeholder:text-slate-600 bg-slate-200 text-slate-800 w-1/3"
                 onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
               />
               <input
                 placeholder="NFT Price in Eth"
-                className="mt-2 border rounded p-4"
+                className="mt-2 border rounded p-4 placeholder:text-slate-600 bg-slate-200 text-slate-800 w-1/3"
                 onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
               />
               <input
@@ -159,9 +173,13 @@ export default function CreateItem() {
                 }
               </div>
               {uploading ? <div><p>Uploading image...</p></div> : <></>}
-              {formInput.name !== '' && formInput.price !== '' && formInput.description !== '' && fileUrl ? <button onClick={addNft} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
+              {formInput.name !== '' && formInput.price !== '' && formInput.description !== '' && fileUrl ? <button onClick={addNft} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg w-1/3">
                 Create NFT
-              </button> : <p>All fields are required </p>}</>}
+              </button> : <p>All fields are required </p>}</> :
+              <>
+
+              </>
+                }
         </>
 
 

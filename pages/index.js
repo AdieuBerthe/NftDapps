@@ -59,7 +59,9 @@ const Home = (props) => {
               }
             })
           );
-          let displayedItems = items.filter(
+          setNfts((arr) => [...arr, ...items]);
+        }
+          let displayedItems = nfts.filter(
             (value) => Object.keys(value).length !== 0
           );
           if (props.filters.sort === "asc" || props.filters.sort === "desc") {
@@ -69,9 +71,9 @@ const Home = (props) => {
               const sign = Math.abs(diff) / diff; //-1, 1
               return props.filters.sort === "asc" ? sign : -sign;
             });
+            setNfts([...displayedItems])
           }
-          setNfts((arr) => [...arr, ...displayedItems]);
-        }
+
       }
       setLoadingState("loaded");
     }
@@ -93,38 +95,39 @@ const Home = (props) => {
   return (
     <div>
       {!user && (
-        <h2 className="px-20 py-10 text-3xl">Metamask isn't connected</h2>
+        <h2 className="px-20 py-10 text-3xl text-blue-400">Metamask isn't connected</h2>
       )}
 
       {user && loadingState === "loaded" && nfts.length === 0 && (
-        <h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>
+        <h1 className="px-20 py-10 text-3xl text-blue-400">No items in marketplace</h1>
       )}
 
       {user && loadingState === "loaded" && nfts.length > 0 && (
         <>
-          <h1 className="px-20 py-10 text-3xl">Items in marketplace</h1>
+          <h1 className="px-20 py-10 text-3xl text-blue-400">Items in marketplace</h1>
           <div className="flex justify-center">
-            <div className="px-4" style={{ maxWidth: "1600px" }}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+            <div className="px-4" style={{ maxWidth: "1300px" }}>
+              <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 ">
                 {nfts.map((nft, i) => (
                   <div
                     key={i}
+                    
                     className="border shadow rounded-xl overflow-hidden"
                   >
                     <img src={nft.image} alt={nft.name} />
                     <div className="p-4">
                       <p className="text-right">{nft.collection}</p>
                       <p
-                        style={{ height: "64px" }}
+                        
                         className="text-2xl font-semibold"
                       >
                         {nft.name}
                       </p>
-                      <div style={{ height: "70px", overflow: "hidden" }}>
+                      <div >
                         <p className="text-gray-400">{nft.description}</p>
                       </div>
                     </div>
-                    <div className="p-4 bg-black">
+                    <div className="p-4 relative bottom-0 bg-black">
                       <p className="text-2xl font-bold text-white">
                         {nft.price} ETH
                       </p>

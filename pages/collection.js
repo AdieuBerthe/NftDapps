@@ -22,6 +22,10 @@ export default function CreateItem() {
     }
   }
 
+  const addAnother = () => {
+    setCreated(false);
+  }
+
   const redirect = () => {
     router.push('/create-nft');
   }
@@ -33,17 +37,17 @@ export default function CreateItem() {
     <div className="flex justify-center">
       {!created ? <div className="w-1/2 flex flex-col pb-12">
         <input
-          placeholder="Artist Name"
-          className="mt-8 border rounded p-4"
+          placeholder="Collection Name"
+          className="mt-8 border rounded p-4 placeholder:text-slate-600 bg-slate-200 text-slate-800 w-1/3"
           onChange={e => updateFormInput({ ...formInput, artistName: e.target.value })}
         />
         <input
           placeholder="Symbol"
-          className="mt-2 border rounded p-4"
+          className="mt-2 border rounded p-4 placeholder:text-slate-600 bg-slate-200 text-slate-800 w-1/3"
           onChange={e => updateFormInput({ ...formInput, symbol: e.target.value })}
         />
 
-         <button onClick={createCollection} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg">
+         <button onClick={createCollection} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg w-1/3">
           Create Collection
         </button> 
       </div> 
@@ -52,7 +56,8 @@ export default function CreateItem() {
              
         <p>Collection created ! Why don't you add some NFTs to it ?</p>
         <br/>
-        <button onClick={redirect} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg" >Create a NFT</button>
+        <button onClick={redirect} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg mr-2" >Create a NFT</button> 
+        <button onClick={addAnother} className="font-bold mt-4 bg-slate-400 text-white rounded p-4 shadow-lg" >Create a new collection</button>
         </div>}
     </div>
 
