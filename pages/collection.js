@@ -54,7 +54,7 @@ export default function CreateItem() {
       : 
       <div className="text-2xl py-2">
              
-        <p>Collection created ! Why don't you add some NFTs to it ?</p>
+        <p>Collection created ! Why don&apost you add some NFTs to it ?</p>
         <br/>
         <button onClick={redirect} className="font-bold mt-4 bg-blue-800 text-white rounded p-4 shadow-lg mr-2" >Create a NFT</button> 
         <button onClick={addAnother} className="font-bold mt-4 bg-slate-400 text-white rounded p-4 shadow-lg" >Create a new collection</button>

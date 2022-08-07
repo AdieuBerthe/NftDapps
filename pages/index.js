@@ -96,7 +96,7 @@ const Home = (props) => {
   return (
     <div>
       {!user && (
-        <h2 className="px-20 py-10 text-3xl text-blue-400">Metamask isn't connected</h2>
+        <h2 className="px-20 py-10 text-3xl text-blue-400">Metamask is not connected</h2>
       )}
 
       {user && loadingState === "loaded" && nfts.length === 0 && (

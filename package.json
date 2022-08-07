@@ -1,5 +1,5 @@
 {
-  "homepage": "https://AdieuBerthe.github.io/NftDapps/",
+  "homepage": "https://adieuberthe.github.io/NftDapps/",
   "name": "nft-marketplace",
   "version": "0.1.0",
   "private": true,
@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d .next"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
