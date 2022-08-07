@@ -89,6 +89,7 @@ const Home = (props) => {
       value: price,
     });
     await transaction.wait();
+    loaded = false;
     loadNFTs();
   }
 
@@ -114,7 +115,7 @@ const Home = (props) => {
                     
                     className="border shadow rounded-xl overflow-hidden"
                   >
-                    <img src={nft.image} alt={nft.name} />
+                    <img className="object-scale-down h-96 w-full" src={nft.image} alt={nft.name} />
                     <div className="p-4">
                       <p className="text-right">{nft.collection}</p>
                       <p
