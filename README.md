@@ -2,8 +2,6 @@
 
 ## Expected links :
 
-Github Pages web site :
-xxxxx (à completer ou supprimer)
 
 Git repo :
 https://github.com/AdieuBerthe/NftDapps
